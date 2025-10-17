@@ -1,0 +1,12 @@
+build:
+  version: "1.0"
+
+logging:
+  level:
+    root: warn
+
+spring:
+  jpa:
+    open-in-view: false
+  main:
+    banner-mode: off
