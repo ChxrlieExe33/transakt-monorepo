@@ -6,7 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -29,13 +29,15 @@ public class Customer {
 
     private String email;
 
-    private Date birthDate;
+    private LocalDate birthDate;
 
     private String address;
 
     private String city;
 
     private String jobTitle;
+
+    private Boolean emailVerified;
 
     @CreatedDate
     private Instant registeredAt;
