@@ -19,6 +19,7 @@ spring:
     stream:
       kafka:
         binder:
+          autoCreateTopics: true
           brokers: localhost:9092
       bindings:
         customerRegistered-out-0:
