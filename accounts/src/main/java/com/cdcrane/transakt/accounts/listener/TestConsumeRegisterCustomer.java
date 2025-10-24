@@ -1,4 +1,4 @@
-package com.cdcrane.transakt.accounts;
+package com.cdcrane.transakt.accounts.listener;
 
 import com.cdcrane.transakt.accounts.event.CustomerRegisteredEvent;
 import org.springframework.context.annotation.Bean;
