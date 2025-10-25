@@ -9,7 +9,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
   config:
     import: "configserver:http://localhost:8070/"
   h2:
@@ -25,6 +24,17 @@ spring:
         customerRegistered-out-0:
           destination: customer-registered
 
+keycloak:
+  url: http://localhost:7080
+  realm: transakt
+  client-id: user-manager
+  client-secret: Lnmq0dqeEqFXGq20MUkdvlgcEtxFsglK # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+
 server:
   port: 8080
 
+logging:
+  level:
+    com:
+      cdcrane:
+        customers: info

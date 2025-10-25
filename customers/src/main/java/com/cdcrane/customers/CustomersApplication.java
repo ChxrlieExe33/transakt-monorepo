@@ -21,6 +21,7 @@ public class CustomersApplication {
     @Bean
     public CommandLineRunner runner() {
         return args -> {
+            System.out.println("--------------------------");
             System.out.println("Customers service started!");
             System.out.println("--------------------------");
         };

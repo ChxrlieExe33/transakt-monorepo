@@ -21,6 +21,7 @@ public class TransactionsApplication {
     @Bean
     public CommandLineRunner runner() {
         return args -> {
+            System.out.println("--------------------------");
             System.out.println("Accounts service started!");
             System.out.println("--------------------------");
         };
