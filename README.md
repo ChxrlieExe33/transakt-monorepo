@@ -6,7 +6,7 @@ It will be a simple banking style system, using event-driven architecture and lo
 
 # Main features
 
-- Java 25 and Spring Boot 3.5 for the microservices, following good practices and SOLID.
+- Java 21 and Spring Boot 3.5 for the microservices, following good practices and SOLID.
 - Event-driven architecture using Kafka and Spring cloud stream for async communication between services. 
 - ApplicationEventPublisher for sending local events for async processing.
 - Keycloak for authentication using OAuth2.0 and OIDC, with a PKCE client for secure end user authentication and authorization.
@@ -17,7 +17,7 @@ It will be a simple banking style system, using event-driven architecture and lo
 
 # Microservices
 
-- **customers** --> Will manage bank customer information, on sign up it will register customers in Keycloak as a user to authenticate.
+- **customers** --> Will manage bank customer information, on customer sign-up it will register customers in Keycloak as a user to authenticate.
 - **accounts** --> Will handle bank accounts, balances, etc.
 - **transactions** --> Will record and manage transactions and communicate with accounts-service via events passed through Kafka.
 - **config-server** --> Will externalise the configuration of the microservices to one place.
