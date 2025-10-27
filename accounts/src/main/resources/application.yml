@@ -21,10 +21,6 @@ spring:
         binder:
           autoCreateTopics: true
           brokers: localhost:9092
-      bindings:
-        customerRegistered-in-0:
-          destination: customer-registered
-          group: ${spring.application.name}
 
 
 server:

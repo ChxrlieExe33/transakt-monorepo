@@ -14,6 +14,11 @@ spring:
   h2:
     console:
       enabled: true
+  mail:
+    username: placeholder
+    password: placeholder
+    host: smtp.gmail.com
+    port: 587
   cloud:
     stream:
       kafka:
@@ -22,13 +27,16 @@ spring:
           brokers: localhost:9092
       bindings:
         customerRegistered-out-0:
-          destination: customer-registered
+          destination: transakt.customer-registered
 
 keycloak:
   url: http://localhost:7080
   realm: transakt
   client-id: user-manager
-  client-secret: Lnmq0dqeEqFXGq20MUkdvlgcEtxFsglK # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+  client-secret: SGaQ9MzbCj3rSKy1Gc63jVbx7TA3UMOI # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+
+app:
+  frontend-base-url: "http://placeholder.com"
 
 server:
   port: 8080

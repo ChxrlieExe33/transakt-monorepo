@@ -1,6 +1,6 @@
 package com.cdcrane.customers.service;
 
-import com.cdcrane.customers.event.CustomerRegisteredEvent;
+import com.cdcrane.customers.event.CustomerVerifiedEvent;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class KeycloakUserManagerService {
      * later this should run after the user has verified their email on our application side.
      * @param event User registration event.
      */
-    public void createUserAccount(CustomerRegisteredEvent event) {
+    public void createUserAccount(CustomerVerifiedEvent event) {
 
         RealmResource realmResource = keycloak.realm(realm);
         UsersResource usersResource = realmResource.users();
@@ -83,7 +83,7 @@ public class KeycloakUserManagerService {
 
     }
 
-    private UserRepresentation buildUserAndCredentials(CustomerRegisteredEvent event) {
+    private UserRepresentation buildUserAndCredentials(CustomerVerifiedEvent event) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(event.email());
         user.setEmail(event.email());
@@ -96,8 +96,7 @@ public class KeycloakUserManagerService {
         tempPassword.setType(CredentialRepresentation.PASSWORD);
         tempPassword.setTemporary(true);
 
-        // TODO: Either receive a password from the user, or randomly generate a password and give it to them.
-        tempPassword.setValue("test123");
+        tempPassword.setValue(event.temporaryPassword());
 
         user.setCredentials(List.of(tempPassword));
         user.setRequiredActions(List.of("UPDATE_PASSWORD"));

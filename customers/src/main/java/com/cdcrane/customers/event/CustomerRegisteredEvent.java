@@ -10,5 +10,6 @@ public record CustomerRegisteredEvent(UUID customerId,
                                       LocalDate birthDate,
                                       String address,
                                       String city,
-                                      String jobTitle) {
+                                      String jobTitle,
+                                      Integer verificationCode) {
 }

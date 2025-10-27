@@ -37,7 +37,9 @@ public class Customer {
 
     private String jobTitle;
 
-    private Boolean emailVerified;
+    private Integer verificationCode;
+
+    private Boolean verified;
 
     @CreatedDate
     private Instant registeredAt;
