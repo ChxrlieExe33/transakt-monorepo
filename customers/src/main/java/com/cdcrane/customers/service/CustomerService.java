@@ -110,11 +110,11 @@ public class CustomerService implements CustomerUseCase{
 
         customer.setVerified(true);
         customer.setVerificationCode(null);
-        customerRepo.save(customer);
+        Customer saved = customerRepo.save(customer);
 
         String temporaryPassword = securityUtils.generateTemporaryPassword();
 
-        CustomerVerifiedEvent event = new CustomerVerifiedEvent(customer.getFirstName(), customer.getLastName(), customer.getEmail(), temporaryPassword);
+        CustomerVerifiedEvent event = new CustomerVerifiedEvent(saved.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), temporaryPassword);
 
         localEventPublisher.publishEvent(event);
 

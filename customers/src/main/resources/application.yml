@@ -33,7 +33,7 @@ keycloak:
   url: http://localhost:7080
   realm: transakt
   client-id: user-manager
-  client-secret: SGaQ9MzbCj3rSKy1Gc63jVbx7TA3UMOI # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+  client-secret: ip2TlFlWojU8uYjvqUxGsYrDXK5Ca1lE # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
 
 app:
   frontend-base-url: "http://placeholder.com"
