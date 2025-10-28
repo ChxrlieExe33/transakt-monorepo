@@ -52,9 +52,6 @@ public class KeycloakUserManagerService {
     /**
      * Initial implementation of the functionality to register an application user
      * into keycloak for OAuth and OIDC.
-     * *
-     * IMPORTANT: For now this method is being run immediately after registering a user,
-     * later this should run after the user has verified their email on our application side.
      * @param event User registration event.
      */
     public void createUserAccount(CustomerVerifiedEvent event) {
@@ -62,7 +59,8 @@ public class KeycloakUserManagerService {
         UsersResource usersResource = realmResource.users();
 
         try {
-            // Step 1: Create user with attributes only
+            // Step 1: Create a user with attributes only
+            // Had to split this into steps while debugging to figure out an issue, will convert back after.
             UserRepresentation user = buildUserWithAttributes(event);
             Response response = usersResource.create(user);
 
@@ -77,7 +75,7 @@ public class KeycloakUserManagerService {
 
             log.info("Keycloak user account for {} created successfully with ID {}.", event.email(), userId);
 
-            // Step 2: Set temporary password and required actions
+            // Step 2: Set a temporary password and required actions
             UserRepresentation passwordUpdate = new UserRepresentation();
 
             CredentialRepresentation tempPassword = new CredentialRepresentation();
@@ -97,6 +95,11 @@ public class KeycloakUserManagerService {
         }
     }
 
+    /**
+     * Prepare the first stage UserRepresentation with details, and the Customer ID attribute.
+     * @param event The CustomerVerifiedEvent with the necessary details.
+     * @return A minimal UserRepresentation.
+     */
     private UserRepresentation buildUserWithAttributes(CustomerVerifiedEvent event) {
         UserRepresentation user = new UserRepresentation();
         user.setUsername(event.email());
