@@ -28,12 +28,14 @@ spring:
       bindings:
         customerRegistered-out-0:
           destination: transakt.customer-registered
+        customerVerified-out-0:
+          destination: transakt.customer-verified
 
 keycloak:
   url: http://localhost:7080
   realm: transakt
   client-id: user-manager
-  client-secret: ip2TlFlWojU8uYjvqUxGsYrDXK5Ca1lE # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+  client-secret: dZXsyOaOnvvFJigaLUcNK0pSMQXGbOo2 # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
 
 app:
   frontend-base-url: "http://placeholder.com"

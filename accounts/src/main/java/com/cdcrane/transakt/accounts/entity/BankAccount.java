@@ -16,13 +16,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "accounts")
-public class Account {
+public class BankAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID accountId;
-
-    private String iban;
 
     private UUID customerId;
 

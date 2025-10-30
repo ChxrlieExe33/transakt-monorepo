@@ -9,20 +9,34 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
   config:
     import: "configserver:http://localhost:8070/"
   h2:
     console:
       enabled: true
   cloud:
+    function:
+      definition: customerRegistered;customerVerified
     stream:
       kafka:
         binder:
           autoCreateTopics: true
           brokers: localhost:9092
+      bindings:
+        customerRegistered-in-0:
+          destination: transakt.customer-registered
+          group: ${spring.application.name}
+        customerVerified-in-0:
+          destination: transakt.customer-verified
+          group: ${spring.application.name}
 
 
 server:
   port: 8090
 
+logging:
+  level:
+    com:
+      cdcrane:
+        transakt:
+          accounts: info

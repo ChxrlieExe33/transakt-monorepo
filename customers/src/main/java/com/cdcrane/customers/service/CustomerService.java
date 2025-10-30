@@ -116,6 +116,7 @@ public class CustomerService implements CustomerUseCase{
 
         CustomerVerifiedEvent event = new CustomerVerifiedEvent(saved.getCustomerId(), customer.getFirstName(), customer.getLastName(), customer.getEmail(), temporaryPassword);
 
+        streamBridge.send("customerVerified-out-0", event);
         localEventPublisher.publishEvent(event);
 
         return new EmailVerifiedResponse("Your email is verified.", temporaryPassword);
