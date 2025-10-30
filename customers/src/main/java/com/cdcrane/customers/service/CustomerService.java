@@ -86,7 +86,7 @@ public class CustomerService implements CustomerUseCase{
     }
 
     @Override
-    @Transactional
+    @Transactional(dontRollbackOn = InvalidVerificationCodeException.class) // Need this since if it rolls back on the invalid code exception, it doesn't persist the code reset and sends a new code which was never persisted.
     public EmailVerifiedResponse checkVerificationCode(SubmitVerificationCodeRequest request) {
 
         Customer customer = customerRepo.findByEmail(request.email())
