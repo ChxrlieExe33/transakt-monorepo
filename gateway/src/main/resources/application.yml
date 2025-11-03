@@ -3,6 +3,11 @@ spring:
     name: gateway
   config:
     import: "configserver:http://localhost:8070/"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:7080/realms/transakt/protocol/openid-connect/certs
 
 server:
   port: 8060

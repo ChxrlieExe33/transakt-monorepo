@@ -21,4 +21,4 @@ It will be a simple banking style system, using event-driven architecture and lo
 - **accounts** --> Will handle bank accounts, balances, etc.
 - **transactions** --> Will record and manage transactions and communicate with accounts-service via events passed through Kafka.
 - **config-server** --> Will externalise the configuration of the microservices to one place.
-- **gateway-server** --> (NOT STARTED) Will handle securely providing access to inner microservices to the end users.
+- **gateway-server** --> Will handle securely providing access to inner microservices to the end users.

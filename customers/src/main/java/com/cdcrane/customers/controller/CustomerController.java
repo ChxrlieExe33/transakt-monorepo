@@ -19,6 +19,11 @@ public class CustomerController {
         this.customerUseCase = customerUseCase;
     }
 
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World!";
+    }
+
     @PostMapping
     public ResponseEntity<Void> registerCustomer(@RequestBody RegisterCustomerRequest customerData) {
 
