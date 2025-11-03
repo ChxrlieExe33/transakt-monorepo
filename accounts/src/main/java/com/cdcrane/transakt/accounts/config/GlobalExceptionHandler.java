@@ -2,6 +2,7 @@ package com.cdcrane.transakt.accounts.config;
 
 import com.cdcrane.transakt.accounts.dto.ExceptionErrorResponse;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
+import com.cdcrane.transakt.accounts.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -70,6 +71,18 @@ public class GlobalExceptionHandler {
     }
 
     // -------------------- SPECIFIC EXCEPTIONS --------------------
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.NOT_FOUND.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 
     @ExceptionHandler(CannotOpenAnotherAccountException.class)
     public ResponseEntity<ExceptionErrorResponse> handleCannotOpenAnotherAccount(CannotOpenAnotherAccountException ex) {

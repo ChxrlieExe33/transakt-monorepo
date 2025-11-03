@@ -11,6 +11,7 @@
         <module name="customers" />
         <module name="accounts" />
         <module name="transactions" />
+        <module name="gateway" />
       </profile>
     </annotationProcessing>
   </component>
@@ -19,6 +20,7 @@
       <module name="accounts" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="customers" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="transactions" options="-parameters" />
     </option>
   </component>

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/accounts")
+@RequestMapping("/api/v1")
 public class BankAccountController {
 
     private final BankAccountUseCase bankAccountUseCase;

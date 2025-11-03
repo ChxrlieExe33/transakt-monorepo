@@ -91,7 +91,7 @@ public class KeycloakUserManagerService {
             log.info("Temporary password and required actions set for user {}.", userId);
 
         } catch (Exception ex) {
-            log.error("Failed to create keycloak user account for {}. Error: {}", event.email(), ex.getMessage(), ex);
+            log.error("Failed to create keycloak user account for {}. Error: {}", event.email(), ex.getMessage());
         }
     }
 
