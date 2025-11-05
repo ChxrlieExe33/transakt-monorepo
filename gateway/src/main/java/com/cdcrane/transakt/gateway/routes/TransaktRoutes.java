@@ -15,7 +15,7 @@ public class TransaktRoutes {
                 .route("customers-service", r -> r
                     .path("/customers/**")
                     .filters(f -> f.stripPrefix(1))
-                    .uri("http://localhost:8080"))
+                    .uri("lb://customers"))
                 .build();
 
     }

@@ -1,0 +1,19 @@
+build:
+  version: "1.0"
+
+logging:
+  level:
+    root: warn
+
+spring:
+  main:
+    banner-mode: off
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/

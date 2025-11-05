@@ -22,7 +22,7 @@ public class TransactionsApplication {
     public CommandLineRunner runner() {
         return args -> {
             System.out.println("--------------------------");
-            System.out.println("Accounts service started!");
+            System.out.println("Transactions service started!");
             System.out.println("--------------------------");
         };
     }
