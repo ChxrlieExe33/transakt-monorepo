@@ -9,10 +9,56 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DEFAULT_REALM: transakt
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: password
     volumes:
       - ./infra/keycloak/realms:/opt/keycloak/data/import
     ports:
       - "7080:8080"
+    networks:
+      - transakt-network
+  keycloak-db:
+    image: postgres:16
+    container_name: keycloak_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: keycloak
+    ports:
+      - "5432:5432"
+    volumes:
+      - keycloak_data:/var/lib/postgresql/data
+    networks:
+      - transakt-network
+  transakt-dev:
+    image: postgres:16
+    container_name: transakt_pg_dev
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: transakt
+    ports:
+      - "5433:5432"
+    volumes:
+      - transakt_data:/var/lib/postgresql/data
+    networks:
+      - transakt-network
+  transakt-pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: transakt_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: pgadminpassword
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - transakt_pgadmin:/var/lib/pgadmin
     networks:
       - transakt-network
   kafka:
@@ -42,3 +88,8 @@ services:
 networks:
   transakt-network:
     driver: bridge
+
+volumes:
+  keycloak_data:
+  transakt_data:
+  transakt_pgadmin:

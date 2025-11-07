@@ -2,10 +2,10 @@ spring:
   application:
     name: "customers"
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
+    url: jdbc:postgresql://localhost:5433/transakt
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
   jpa:
     hibernate:
       ddl-auto: update
@@ -35,7 +35,7 @@ keycloak:
   url: http://localhost:7080
   realm: transakt
   client-id: user-manager
-  client-secret: E1LBqeOvGDGxEec0EIxQn9quI70eTI9L # NOTE: Without a persistent keycloak DB, this needs to be regenerated every time the keycloak container restarts.
+  client-secret: placeholder-provide-via-env
 
 app:
   frontend-base-url: "http://placeholder.com"

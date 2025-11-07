@@ -2,10 +2,10 @@ spring:
   application:
     name: "accounts"
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ''
+    url: jdbc:postgresql://localhost:5433/transakt
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
   jpa:
     hibernate:
       ddl-auto: update
