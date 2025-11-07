@@ -11,9 +11,6 @@ spring:
       ddl-auto: update
   config:
     import: "configserver:http://localhost:8070/"
-  h2:
-    console:
-      enabled: true
   mail:
     username: placeholder
     password: placeholder

@@ -12,9 +12,6 @@ spring:
     show-sql: true
   config:
     import: "configserver:http://localhost:8070/"
-  h2:
-    console:
-      enabled: true
 
 server:
   port: 8100
