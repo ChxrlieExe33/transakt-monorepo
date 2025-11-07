@@ -39,6 +39,7 @@ logging:
       cdcrane:
         transakt:
           accounts: info
+    org.springframework.cloud.function.context.catalog.BeanFactoryAwareFunctionRegistry: ERROR
 
 eureka:
   instance:

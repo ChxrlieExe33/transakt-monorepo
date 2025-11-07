@@ -29,6 +29,8 @@ logging:
       cdcrane:
         transakt:
           transactions: info
+    org.springframework.cloud.function.context.catalog.BeanFactoryAwareFunctionRegistry: ERROR
+
 
 server:
   port: 8100

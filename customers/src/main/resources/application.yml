@@ -45,6 +45,7 @@ logging:
     com:
       cdcrane:
         customers: info
+    org.springframework.cloud.function.context.catalog.BeanFactoryAwareFunctionRegistry: ERROR
 
 eureka:
   instance:
