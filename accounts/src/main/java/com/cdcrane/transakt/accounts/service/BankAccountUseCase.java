@@ -1,10 +1,11 @@
 package com.cdcrane.transakt.accounts.service;
 
 import com.cdcrane.transakt.accounts.dto.BankAccountOpenedResponse;
+import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 
 import java.util.UUID;
 
 public interface BankAccountUseCase {
 
-    BankAccountOpenedResponse openBankAccount(UUID customerId);
+    BankAccountOpenedResponse openBankAccount(UUID customerId, OpenBankAccountRequest data);
 }

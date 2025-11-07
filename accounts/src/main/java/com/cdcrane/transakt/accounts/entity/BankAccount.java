@@ -24,6 +24,8 @@ public class BankAccount {
 
     private UUID customerId;
 
+    private String accountName;
+
     private Double currentBalance;
 
     private Boolean enabled;

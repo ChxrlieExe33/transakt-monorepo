@@ -1,6 +1,7 @@
 package com.cdcrane.transakt.accounts.service;
 
 import com.cdcrane.transakt.accounts.dto.BankAccountOpenedResponse;
+import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 import com.cdcrane.transakt.accounts.entity.BankAccount;
 import com.cdcrane.transakt.accounts.entity.CustomerProjection;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
@@ -27,7 +28,7 @@ public class BankAccountService implements BankAccountUseCase{
 
     @Override
     @Transactional
-    public BankAccountOpenedResponse openBankAccount(UUID customerId) {
+    public BankAccountOpenedResponse openBankAccount(UUID customerId, OpenBankAccountRequest data) {
 
         // Check that the customer exists by checking local customer projection.
         CustomerProjection projection = customerProjectionRepository.findById(customerId)
@@ -45,6 +46,7 @@ public class BankAccountService implements BankAccountUseCase{
 
         BankAccount account = BankAccount.builder()
                 .customerId(customerId)
+                .accountName(data.accountName())
                 .currentBalance(0.0)
                 .enabled(true)
                 .overdraftPermitted(false)
