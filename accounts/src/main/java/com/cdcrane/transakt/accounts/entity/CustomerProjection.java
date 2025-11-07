@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "customer_projection")
+@Table(name = "AccountsSVC_customer_projection")
 public class CustomerProjection {
 
     @Id

@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "bank_transfers")
+@Table(name = "TransactionsSVC_bank_transfers")
 public class BankTransfer {
 
     @Id

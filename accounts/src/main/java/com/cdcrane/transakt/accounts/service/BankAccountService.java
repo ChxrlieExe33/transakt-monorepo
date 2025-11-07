@@ -4,12 +4,14 @@ import com.cdcrane.transakt.accounts.dto.BankAccountOpenedResponse;
 import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 import com.cdcrane.transakt.accounts.entity.BankAccount;
 import com.cdcrane.transakt.accounts.entity.CustomerProjection;
+import com.cdcrane.transakt.accounts.event.AccountOpenedEvent;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
 import com.cdcrane.transakt.accounts.exception.ResourceNotFoundException;
 import com.cdcrane.transakt.accounts.repository.BankAccountRepository;
 import com.cdcrane.transakt.accounts.repository.CustomerProjectionRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -20,10 +22,12 @@ public class BankAccountService implements BankAccountUseCase{
 
     private final BankAccountRepository bankAccountRepository;
     private final CustomerProjectionRepository customerProjectionRepository;
+    private final StreamBridge streamBridge;
 
-    public BankAccountService(BankAccountRepository bankAccountRepository, CustomerProjectionRepository customerProjectionRepository) {
+    public BankAccountService(BankAccountRepository bankAccountRepository, CustomerProjectionRepository customerProjectionRepository, StreamBridge streamBridge) {
         this.bankAccountRepository = bankAccountRepository;
         this.customerProjectionRepository = customerProjectionRepository;
+        this.streamBridge = streamBridge;
     }
 
     @Override
@@ -58,6 +62,10 @@ public class BankAccountService implements BankAccountUseCase{
 
         projection.setNewAccountCreationPermitted(false);
         customerProjectionRepository.save(projection);
+
+        var event = new AccountOpenedEvent(saved.getAccountId(), saved.getCurrentBalance(), saved.getCustomerId());
+
+        streamBridge.send("accountOpened-out-0", event);
 
         return new BankAccountOpenedResponse(account.getAccountId(), account.getCurrentBalance());
 

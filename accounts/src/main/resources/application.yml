@@ -26,6 +26,8 @@ spring:
         customerVerified-in-0:
           destination: transakt.customer-verified
           group: ${spring.application.name}
+        accountOpened-out-0:
+          destination: transakt.account-opened
 
 
 server:

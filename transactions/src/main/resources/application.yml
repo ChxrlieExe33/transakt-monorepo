@@ -9,9 +9,26 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
   config:
     import: "configserver:http://localhost:8070/"
+  cloud:
+    function:
+      definition: accountOpened
+    stream:
+      kafka:
+        binder:
+          autoCreateTopics: true
+          brokers: localhost:9092
+      bindings:
+        accountOpened-in-0:
+          destination: transakt.account-opened
+
+logging:
+  level:
+    com:
+      cdcrane:
+        transakt:
+          transactions: info
 
 server:
   port: 8100
