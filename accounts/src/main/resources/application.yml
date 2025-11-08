@@ -13,7 +13,7 @@ spring:
     import: "configserver:http://localhost:8070/"
   cloud:
     function:
-      definition: customerRegistered;customerVerified
+      definition: customerRegistered;customerVerified;cashDeposited
     stream:
       kafka:
         binder:
@@ -28,6 +28,9 @@ spring:
           group: ${spring.application.name}
         accountOpened-out-0:
           destination: transakt.account-opened
+        cashDeposited-in-0:
+          destination: transakt.cash-deposited
+          group: ${spring.application.name}
 
 
 server:

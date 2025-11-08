@@ -5,6 +5,7 @@ import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 import com.cdcrane.transakt.accounts.entity.BankAccount;
 import com.cdcrane.transakt.accounts.entity.CustomerProjection;
 import com.cdcrane.transakt.accounts.event.AccountOpenedEvent;
+import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
 import com.cdcrane.transakt.accounts.exception.ResourceNotFoundException;
 import com.cdcrane.transakt.accounts.repository.BankAccountRepository;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -68,6 +70,27 @@ public class BankAccountService implements BankAccountUseCase{
         streamBridge.send("accountOpened-out-0", event);
 
         return new BankAccountOpenedResponse(account.getAccountId(), account.getCurrentBalance());
+
+    }
+
+    @Override
+    @Transactional
+    public void adjustBalanceFromCashDeposit(CashDepositedEvent event) {
+
+        Optional<BankAccount> account = bankAccountRepository.findById(event.accountId());
+
+        if(account.isEmpty()) {
+            log.error("Bank account with ID {} not found. Could not adjust balance from deposit.", event.accountId());
+            return;
+        }
+
+        BankAccount bankAccount = account.get();
+
+        bankAccount.setCurrentBalance(bankAccount.getCurrentBalance() + event.amount());
+
+        bankAccountRepository.save(bankAccount);
+
+        log.info("Adjusted balance for bank account {} by {} due to cash deposit with ID {}", event.accountId(), event.amount(), event.cashDepositId());
 
     }
 

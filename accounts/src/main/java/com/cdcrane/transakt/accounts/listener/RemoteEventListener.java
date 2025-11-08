@@ -1,7 +1,9 @@
 package com.cdcrane.transakt.accounts.listener;
 
+import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
 import com.cdcrane.transakt.accounts.event.CustomerRegisteredEvent;
 import com.cdcrane.transakt.accounts.event.CustomerVerifiedEvent;
+import com.cdcrane.transakt.accounts.service.BankAccountUseCase;
 import com.cdcrane.transakt.accounts.service.CustomerProjectionUseCase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,13 @@ public class RemoteEventListener {
             customerProjectionUseCase.enableCustomer(event.customerId());
 
         };
+
+    }
+
+    @Bean
+    public Consumer<CashDepositedEvent> cashDeposited(BankAccountUseCase bankAccountUseCase) {
+
+        return bankAccountUseCase::adjustBalanceFromCashDeposit;
 
     }
 

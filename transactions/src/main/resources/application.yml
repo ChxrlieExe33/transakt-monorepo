@@ -22,6 +22,9 @@ spring:
       bindings:
         accountOpened-in-0:
           destination: transakt.account-opened
+          group: ${spring.application.name}
+        cashDeposited-out-0:
+          destination: transakt.cash-deposited
 
 logging:
   level:
