@@ -1,6 +1,7 @@
 package com.cdcrane.transakt.accounts.listener;
 
 import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
+import com.cdcrane.transakt.accounts.event.CashWithdrawnEvent;
 import com.cdcrane.transakt.accounts.event.CustomerRegisteredEvent;
 import com.cdcrane.transakt.accounts.event.CustomerVerifiedEvent;
 import com.cdcrane.transakt.accounts.service.BankAccountUseCase;
@@ -37,6 +38,13 @@ public class RemoteEventListener {
     public Consumer<CashDepositedEvent> cashDeposited(BankAccountUseCase bankAccountUseCase) {
 
         return bankAccountUseCase::adjustBalanceFromCashDeposit;
+
+    }
+
+    @Bean
+    public Consumer<CashWithdrawnEvent> cashWithdrawn(BankAccountUseCase bankAccountUseCase) {
+
+        return bankAccountUseCase::adjustBalanceFromCashWithdrawal;
 
     }
 

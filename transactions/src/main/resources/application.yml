@@ -25,6 +25,8 @@ spring:
           group: ${spring.application.name}
         cashDeposited-out-0:
           destination: transakt.cash-deposited
+        cashWithdrawn-out-0:
+          destination: transakt.cash-withdrawn
 
 logging:
   level:

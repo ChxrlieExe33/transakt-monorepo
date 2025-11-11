@@ -2,7 +2,8 @@ package com.cdcrane.transakt.transactions.config;
 
 import com.cdcrane.transakt.transactions.dto.ExceptionErrorResponse;
 import com.cdcrane.transakt.transactions.exception.AccountNotFoundException;
-import com.cdcrane.transakt.transactions.exception.NotAuthorizedToDepositException;
+import com.cdcrane.transakt.transactions.exception.NotAuthorizedForCashOperationException;
+import com.cdcrane.transakt.transactions.exception.NotEnoughFundsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,8 +70,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
-    @ExceptionHandler(NotAuthorizedToDepositException.class)
-    public ResponseEntity<ExceptionErrorResponse> handleNotAuthorizedToDeposit(NotAuthorizedToDepositException ex) {
+    @ExceptionHandler(NotAuthorizedForCashOperationException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleNotAuthorizedToDeposit(NotAuthorizedForCashOperationException ex) {
 
         ExceptionErrorResponse error = ExceptionErrorResponse.builder()
                 .message(ex.getMessage())
@@ -81,6 +82,17 @@ public class GlobalExceptionHandler {
         log.warn("Not authorized to deposit: {}", ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(NotEnoughFundsException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleNotEnoughFunds(NotEnoughFundsException ex) {
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+        log.warn("Not enough funds: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
 

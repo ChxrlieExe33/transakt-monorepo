@@ -6,6 +6,7 @@ import com.cdcrane.transakt.accounts.entity.BankAccount;
 import com.cdcrane.transakt.accounts.entity.CustomerProjection;
 import com.cdcrane.transakt.accounts.event.AccountOpenedEvent;
 import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
+import com.cdcrane.transakt.accounts.event.CashWithdrawnEvent;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
 import com.cdcrane.transakt.accounts.exception.ResourceNotFoundException;
 import com.cdcrane.transakt.accounts.repository.BankAccountRepository;
@@ -80,6 +81,7 @@ public class BankAccountService implements BankAccountUseCase{
         Optional<BankAccount> account = bankAccountRepository.findById(event.accountId());
 
         if(account.isEmpty()) {
+            // This should never happen since the transactions SVC has its local projection.
             log.error("Bank account with ID {} not found. Could not adjust balance from deposit.", event.accountId());
             return;
         }
@@ -91,6 +93,35 @@ public class BankAccountService implements BankAccountUseCase{
         bankAccountRepository.save(bankAccount);
 
         log.info("Adjusted balance for bank account {} by {} due to cash deposit with ID {}", event.accountId(), event.amount(), event.cashDepositId());
+
+    }
+
+    @Override
+    @Transactional
+    public void adjustBalanceFromCashWithdrawal(CashWithdrawnEvent event) {
+
+        Optional<BankAccount> account = bankAccountRepository.findById(event.accountId());
+
+        if(account.isEmpty()) {
+            // This should never happen either since the transactions SVC has its local projection.
+            log.error("Bank account with ID {} not found. Could not adjust balance from withdrawal.", event.accountId());
+            return;
+        }
+
+        BankAccount bankAccount = account.get();
+
+        if(bankAccount.getCurrentBalance() < event.amount()) {
+            // TODO: Later on set up to send another event back to the transactions svc to mark this withdrawal as bad due to eventual consistency.
+            // Realistically this condition should never happen since the transactions svc keeps a balance projection, but this is for race conditions.
+            log.error("Bank account with ID {} does not have enough funds to perform withdrawal with ID {}.", event.accountId(), event.cashWithdrawalId());
+            return;
+        }
+
+        bankAccount.setCurrentBalance(bankAccount.getCurrentBalance() - event.amount());
+
+        bankAccountRepository.save(bankAccount);
+
+        log.info("Adjusted balance for bank account {} by {} due to cash withdrawal with ID {}", event.accountId(), event.amount(), event.cashWithdrawalId());
 
     }
 

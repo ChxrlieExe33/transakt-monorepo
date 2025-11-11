@@ -13,7 +13,7 @@ spring:
     import: "configserver:http://localhost:8070/"
   cloud:
     function:
-      definition: customerRegistered;customerVerified;cashDeposited
+      definition: customerRegistered;customerVerified;cashDeposited;cashWithdrawn
     stream:
       kafka:
         binder:
@@ -31,7 +31,9 @@ spring:
         cashDeposited-in-0:
           destination: transakt.cash-deposited
           group: ${spring.application.name}
-
+        cashWithdrawn-in-0:
+          destination: transakt.cash-withdrawn
+          group: ${spring.application.name}
 
 server:
   port: 8090
