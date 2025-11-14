@@ -20,8 +20,8 @@ public class CustomerController {
     }
 
     @GetMapping("/hello")
-    public String hello() {
-        return "Hello World!";
+    public String hello(@RequestHeader(name = "Transakt-Customer-Id") String customerId) {
+        return "Hello there " + customerId + ".";
     }
 
     @PostMapping

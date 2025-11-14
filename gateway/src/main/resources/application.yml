@@ -20,3 +20,6 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8075/eureka/
+
+gateway:
+  public-paths: /customers/api/v1,/customers/api/v1/verify
