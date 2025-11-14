@@ -23,12 +23,14 @@ public class SecurityConfig {
         http.authorizeExchange(e -> e
                 .pathMatchers(HttpMethod.POST, "/customers/api/v1").permitAll()
                 .pathMatchers(HttpMethod.POST, "/customers/api/v1/verify").permitAll()
-                .pathMatchers(HttpMethod.GET, "/customers/api/v1/hello").authenticated()
+                .anyExchange().authenticated()
         );
 
         http.oauth2ResourceServer(spec -> spec.jwt(jwtSpec -> jwtSpec.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));
 
         http.csrf(ServerHttpSecurity.CsrfSpec::disable);
+        http.httpBasic(ServerHttpSecurity.HttpBasicSpec::disable);
+        http.formLogin(ServerHttpSecurity.FormLoginSpec::disable);
 
         return http.build();
     }
