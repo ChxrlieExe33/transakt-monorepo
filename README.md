@@ -1,3 +1,5 @@
+<img src="transakt-microservices.png" alt="Transakt Logo" width="200">
+
 # Transakt Banking
 
 This is a banking system application I am starting to develop to learn microservice architecture in Java with Spring Boot and the Spring Cloud projects.
