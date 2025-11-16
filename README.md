@@ -1,4 +1,4 @@
-<img src="transakt-microservices.png" alt="Transakt Logo" width="200">
+<img src="transakt-microservices.png" alt="Transakt Logo">
 
 # Transakt Banking
 
