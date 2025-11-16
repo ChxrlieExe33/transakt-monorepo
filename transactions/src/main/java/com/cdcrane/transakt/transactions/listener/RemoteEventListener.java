@@ -1,7 +1,10 @@
 package com.cdcrane.transakt.transactions.listener;
 
 import com.cdcrane.transakt.transactions.event.AccountOpenedEvent;
+import com.cdcrane.transakt.transactions.event.TransferCompleteEvent;
+import com.cdcrane.transakt.transactions.event.TransferRejectedEvent;
 import com.cdcrane.transakt.transactions.service.BankAccountProjectionUseCase;
+import com.cdcrane.transakt.transactions.service.BankTransferUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,5 +17,23 @@ public class RemoteEventListener {
     public Consumer<AccountOpenedEvent> accountOpened(BankAccountProjectionUseCase bankAccountProjectionUseCase) {
 
         return bankAccountProjectionUseCase::saveNewAccountProjection;
+    }
+
+    @Bean
+    public Consumer<TransferCompleteEvent> transferSuccess(BankTransferUseCase bankTransferUseCase) {
+
+        return event -> {
+            bankTransferUseCase.handleTransferCompleted(event.transferId());
+        };
+
+    }
+
+    @Bean
+    public Consumer<TransferRejectedEvent> transferRejected(BankTransferUseCase bankTransferUseCase) {
+
+        return event -> {
+            bankTransferUseCase.handleTransferRejected(event.transferId(), event.reason());
+        };
+
     }
 }

@@ -4,6 +4,7 @@ import com.cdcrane.transakt.accounts.dto.BankAccountOpenedResponse;
 import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
 import com.cdcrane.transakt.accounts.event.CashWithdrawnEvent;
+import com.cdcrane.transakt.accounts.event.TransferRequestedEvent;
 
 import java.util.UUID;
 
@@ -14,4 +15,6 @@ public interface BankAccountUseCase {
     void adjustBalanceFromCashDeposit(CashDepositedEvent event);
 
     void adjustBalanceFromCashWithdrawal(CashWithdrawnEvent event);
+
+    void handleBankTransfer(TransferRequestedEvent event);
 }

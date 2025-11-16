@@ -13,7 +13,7 @@ spring:
     import: "configserver:http://localhost:8070/"
   cloud:
     function:
-      definition: accountOpened
+      definition: accountOpened;transferSuccess;transferRejected
     stream:
       kafka:
         binder:
@@ -27,6 +27,14 @@ spring:
           destination: transakt.cash-deposited
         cashWithdrawn-out-0:
           destination: transakt.cash-withdrawn
+        transferSubmitted-out-0:
+          destination: transakt.transfer-submitted
+        transferSuccess-in-0:
+          destination: transakt.transfer-success
+          group: ${spring.application.name}
+        transferRejected-in-0:
+          destination: transakt.transfer-rejected
+          group: ${spring.application.name}
 
 logging:
   level:

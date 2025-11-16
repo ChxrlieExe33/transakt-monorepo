@@ -4,9 +4,7 @@ import com.cdcrane.transakt.accounts.dto.BankAccountOpenedResponse;
 import com.cdcrane.transakt.accounts.dto.OpenBankAccountRequest;
 import com.cdcrane.transakt.accounts.entity.BankAccount;
 import com.cdcrane.transakt.accounts.entity.CustomerProjection;
-import com.cdcrane.transakt.accounts.event.AccountOpenedEvent;
-import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
-import com.cdcrane.transakt.accounts.event.CashWithdrawnEvent;
+import com.cdcrane.transakt.accounts.event.*;
 import com.cdcrane.transakt.accounts.exception.CannotOpenAnotherAccountException;
 import com.cdcrane.transakt.accounts.exception.ResourceNotFoundException;
 import com.cdcrane.transakt.accounts.repository.BankAccountRepository;
@@ -122,6 +120,58 @@ public class BankAccountService implements BankAccountUseCase{
         bankAccountRepository.save(bankAccount);
 
         log.info("Adjusted balance for bank account {} by {} due to cash withdrawal with ID {}", event.accountId(), event.amount(), event.cashWithdrawalId());
+
+    }
+
+    @Override
+    @Transactional
+    public void handleBankTransfer(TransferRequestedEvent event) {
+
+        Optional<BankAccount> sender = bankAccountRepository.findById(event.sourceAccountId());
+        Optional<BankAccount> receiver = bankAccountRepository.findById(event.destinationAccountId());
+
+        if (sender.isEmpty()) {
+            log.warn("Bank account with ID {} not found. Could not perform transfer.", event.sourceAccountId());
+
+            var rejectedEvent = new TransferRejectedEvent(event.transferId(), "Sender account does not exist.");
+            streamBridge.send("transferRejected-out-0", rejectedEvent);
+
+            return;
+
+        }
+
+        if (receiver.isEmpty()) {
+            log.warn("Bank account with ID {} not found. Could not perform transfer.", event.destinationAccountId());
+
+            var rejectedEvent = new TransferRejectedEvent(event.transferId(), "Receiver account does not exist.");
+            streamBridge.send("transferRejected-out-0", rejectedEvent);
+
+            return;
+        }
+
+        BankAccount senderAccount = sender.get();
+        BankAccount receiverAccount = receiver.get();
+
+        if (senderAccount.getCurrentBalance() < event.amount()) {
+            log.warn("Bank account with ID {} does not have enough funds to perform transfer.", event.sourceAccountId());
+
+            var rejectedEvent = new TransferRejectedEvent(event.transferId(), "Sender account does not have enough funds.");
+            streamBridge.send("transferRejected-out-0", rejectedEvent);
+
+            return;
+        }
+
+        senderAccount.setCurrentBalance(senderAccount.getCurrentBalance() - event.amount());
+        receiverAccount.setCurrentBalance(receiverAccount.getCurrentBalance() + event.amount());
+
+        bankAccountRepository.save(senderAccount);
+        bankAccountRepository.save(receiverAccount);
+
+        var success = new TransferCompleteEvent(event.transferId());
+
+        streamBridge.send("transferSuccess-out-0", success);
+
+        log.info("Transfer completed for transfer ID {} from account {} to account {}.", event.transferId(), event.sourceAccountId(), event.destinationAccountId());
 
     }
 

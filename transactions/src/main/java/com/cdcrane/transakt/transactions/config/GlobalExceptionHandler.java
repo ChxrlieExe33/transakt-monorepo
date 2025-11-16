@@ -1,9 +1,7 @@
 package com.cdcrane.transakt.transactions.config;
 
 import com.cdcrane.transakt.transactions.dto.ExceptionErrorResponse;
-import com.cdcrane.transakt.transactions.exception.AccountNotFoundException;
-import com.cdcrane.transakt.transactions.exception.NotAuthorizedForCashOperationException;
-import com.cdcrane.transakt.transactions.exception.NotEnoughFundsException;
+import com.cdcrane.transakt.transactions.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -95,5 +93,29 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler(NotAuthorizedForTransferException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleNotAuthorizedToTransfer(NotAuthorizedForTransferException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.UNAUTHORIZED.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        log.warn("Not authorized to transfer: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
+    @ExceptionHandler(CannotTransferToSameAccountException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleCannotTransferToSameAccount(CannotTransferToSameAccountException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.BAD_REQUEST.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+        log.warn("Cannot transfer to same account: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
 }

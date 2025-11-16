@@ -23,9 +23,9 @@ public class BankTransfer {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID bankTransferId;
 
-    private String sourceIban;
+    private UUID sourceAccountId;
 
-    private String targetIban;
+    private UUID targetAccountId;
 
     private String sourceName;
 
@@ -37,6 +37,8 @@ public class BankTransfer {
 
     @Enumerated(EnumType.STRING)
     private BankTransferStatus status;
+
+    private String failureReason;
 
     @CreatedDate
     private Instant processedAt;

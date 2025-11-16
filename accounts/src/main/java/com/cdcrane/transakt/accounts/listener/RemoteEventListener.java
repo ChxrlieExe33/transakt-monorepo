@@ -1,9 +1,6 @@
 package com.cdcrane.transakt.accounts.listener;
 
-import com.cdcrane.transakt.accounts.event.CashDepositedEvent;
-import com.cdcrane.transakt.accounts.event.CashWithdrawnEvent;
-import com.cdcrane.transakt.accounts.event.CustomerRegisteredEvent;
-import com.cdcrane.transakt.accounts.event.CustomerVerifiedEvent;
+import com.cdcrane.transakt.accounts.event.*;
 import com.cdcrane.transakt.accounts.service.BankAccountUseCase;
 import com.cdcrane.transakt.accounts.service.CustomerProjectionUseCase;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +42,13 @@ public class RemoteEventListener {
     public Consumer<CashWithdrawnEvent> cashWithdrawn(BankAccountUseCase bankAccountUseCase) {
 
         return bankAccountUseCase::adjustBalanceFromCashWithdrawal;
+
+    }
+
+    @Bean
+    public Consumer<TransferRequestedEvent> transferSubmitted(BankAccountUseCase bankAccountUseCase) {
+
+        return bankAccountUseCase::handleBankTransfer;
 
     }
 
