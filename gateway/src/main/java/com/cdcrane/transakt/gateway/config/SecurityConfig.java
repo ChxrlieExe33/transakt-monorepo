@@ -21,6 +21,7 @@ public class SecurityConfig {
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
         http.authorizeExchange(e -> e
+                .pathMatchers(HttpMethod.GET, "/customers/api/v1").hasRole("CUSTOMER_ADMIN")
                 .pathMatchers(HttpMethod.POST, "/customers/api/v1").permitAll()
                 .pathMatchers(HttpMethod.POST, "/customers/api/v1/verify").permitAll()
                 .anyExchange().authenticated()

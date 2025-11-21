@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -39,6 +41,24 @@ public class CustomerService implements CustomerUseCase{
         this.emailUseCase = emailUseCase;
     }
 
+
+    /**
+     * Get all the customers will be restricted to users with the CUSTOMER_ADMIN role in the gateway.
+     * @param pageable Pagination data.
+     * @return The customer objects.
+     */
+    @Override
+    public Page<Customer> getAllCustomers(Pageable pageable) {
+
+        var customers = customerRepo.findAll(pageable);
+
+        if (customers.isEmpty()) {
+            throw new ResourceNotFoundException("No customers found.");
+        }
+
+        return customers;
+
+    }
 
     /**
      * Initial registration for a customer in the application.

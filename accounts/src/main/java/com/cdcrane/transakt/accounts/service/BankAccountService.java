@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -172,6 +173,19 @@ public class BankAccountService implements BankAccountUseCase{
         streamBridge.send("transferSuccess-out-0", success);
 
         log.info("Transfer completed for transfer ID {} from account {} to account {}.", event.transferId(), event.sourceAccountId(), event.destinationAccountId());
+
+    }
+
+    @Override
+    public List<BankAccount> getBankAccountsByCustomerId(UUID customerId) {
+
+        var accounts = bankAccountRepository.findByCustomerId(customerId);
+
+        if (accounts.isEmpty()) {
+            throw new ResourceNotFoundException("This customer has no bank accounts.");
+        }
+
+        return accounts;
 
     }
 

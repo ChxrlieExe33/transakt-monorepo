@@ -1,10 +1,14 @@
 package com.cdcrane.customers.controller;
 
+import com.cdcrane.customers.dto.CustomerDTO;
 import com.cdcrane.customers.dto.EmailVerifiedResponse;
 import com.cdcrane.customers.dto.RegisterCustomerRequest;
 import com.cdcrane.customers.dto.SubmitVerificationCodeRequest;
+import com.cdcrane.customers.entity.Customer;
 import com.cdcrane.customers.service.CustomerUseCase;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,17 @@ public class CustomerController {
     @GetMapping("/hello")
     public String hello(@RequestHeader(name = "Transakt-Customer-Id") String customerId) {
         return "Hello there " + customerId + ".";
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<CustomerDTO>> getAllCustomers(Pageable pageable) {
+
+        Page<Customer> customers = customerUseCase.getAllCustomers(pageable);
+
+        Page<CustomerDTO> response = customers.map(c -> new CustomerDTO(c.getCustomerId(), c.getFirstName(), c.getLastName(), c.getEmail(), c.getRegisteredAt()));
+
+        return ResponseEntity.ok(response);
+
     }
 
     @PostMapping
