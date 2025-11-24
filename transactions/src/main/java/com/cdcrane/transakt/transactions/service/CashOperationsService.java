@@ -16,6 +16,7 @@ import com.cdcrane.transakt.transactions.repository.CashWithdrawalRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -28,12 +29,14 @@ public class CashOperationsService implements CashOperationsUseCase {
     private final CashDepositRepository cashDepositRepo;
     private final StreamBridge streamBridge;
     private final CashWithdrawalRepository cashWithdrawalRepo;
+    private final ApplicationEventPublisher localPublisher;
 
-    public CashOperationsService(BankAccountProjectionRepository bankAccountProjectionRepository, CashDepositRepository cashDepositRepository, StreamBridge streamBridge, CashWithdrawalRepository cashWithdrawalRepository) {
+    public CashOperationsService(BankAccountProjectionRepository bankAccountProjectionRepository, CashDepositRepository cashDepositRepository, StreamBridge streamBridge, CashWithdrawalRepository cashWithdrawalRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.bankAccountProjectionRepo = bankAccountProjectionRepository;
         this.cashDepositRepo = cashDepositRepository;
         this.streamBridge = streamBridge;
         this.cashWithdrawalRepo = cashWithdrawalRepository;
+        this.localPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -64,6 +67,7 @@ public class CashOperationsService implements CashOperationsUseCase {
         var event = new CashDepositedEvent(saved.getCashDepositId(), saved.getAccountId(), saved.getAmount(), saved.getConcept());
 
         streamBridge.send("cashDeposited-out-0", event);
+        localPublisher.publishEvent(event);
 
     }
 
@@ -99,6 +103,7 @@ public class CashOperationsService implements CashOperationsUseCase {
         log.info("Cash withdrawal for account {} with amount {} and concept '{}' saved.", data.accountId(), data.amount(), data.concept());
 
         streamBridge.send("cashWithdrawn-out-0", event);
+        localPublisher.publishEvent(event);
 
     }
 }

@@ -14,6 +14,7 @@ import com.cdcrane.transakt.transactions.repository.TransferRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,11 +27,13 @@ public class BankTransferService implements BankTransferUseCase{
     private final BankAccountProjectionRepository bankAccountProjectionRepo;
     private final TransferRepository transferRepository;
     private final StreamBridge streamBridge;
+    private final ApplicationEventPublisher localPublisher;
 
-    public BankTransferService(BankAccountProjectionRepository bankAccountProjectionRepository, TransferRepository transferRepository, StreamBridge streamBridge) {
+    public BankTransferService(BankAccountProjectionRepository bankAccountProjectionRepository, TransferRepository transferRepository, StreamBridge streamBridge, ApplicationEventPublisher applicationEventPublisher) {
         this.bankAccountProjectionRepo = bankAccountProjectionRepository;
         this.transferRepository = transferRepository;
         this.streamBridge = streamBridge;
+        this.localPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -70,6 +73,7 @@ public class BankTransferService implements BankTransferUseCase{
         TransferRequestedEvent event = new TransferRequestedEvent(saved.getBankTransferId(), saved.getSourceAccountId(), saved.getTargetAccountId(), saved.getAmount(), saved.getSourceName(), saved.getTargetName(), saved.getConcept());
 
         streamBridge.send("transferSubmitted-out-0", event);
+        localPublisher.publishEvent(event);
 
         log.info("Transfer submitted from sender account {} to receiver account {} with amount {} and concept '{}' saved.", request.sourceAccountId(), request.destinationAccountId(), request.amount(), request.concept());
 
