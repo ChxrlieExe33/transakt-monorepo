@@ -106,6 +106,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
+    @ExceptionHandler(NotAuthorisedToQueryTransactionsException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleNotAuthorisedToQueryTransactions(NotAuthorisedToQueryTransactionsException ex) {
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.UNAUTHORIZED.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+        log.warn("Not authorised to query transactions: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+    }
+
     @ExceptionHandler(CannotTransferToSameAccountException.class)
     public ResponseEntity<ExceptionErrorResponse> handleCannotTransferToSameAccount(CannotTransferToSameAccountException ex) {
 
@@ -116,6 +127,18 @@ public class GlobalExceptionHandler {
                 .build();
         log.warn("Cannot transfer to same account: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionErrorResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+
+        ExceptionErrorResponse error = ExceptionErrorResponse.builder()
+                .message(ex.getMessage())
+                .responseCode(HttpStatus.NOT_FOUND.value())
+                .timestamp(System.currentTimeMillis())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
 }

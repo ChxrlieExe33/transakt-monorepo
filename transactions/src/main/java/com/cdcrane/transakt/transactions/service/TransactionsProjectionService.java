@@ -1,5 +1,6 @@
 package com.cdcrane.transakt.transactions.service;
 
+import com.cdcrane.transakt.transactions.dto.TransactionProjectionDTO;
 import com.cdcrane.transakt.transactions.entity.BankTransfer;
 import com.cdcrane.transakt.transactions.entity.TransactionProjection;
 import com.cdcrane.transakt.transactions.enums.TransactionProjectionStatus;
@@ -7,10 +8,13 @@ import com.cdcrane.transakt.transactions.enums.TransactionType;
 import com.cdcrane.transakt.transactions.event.CashDepositedEvent;
 import com.cdcrane.transakt.transactions.event.CashWithdrawnEvent;
 import com.cdcrane.transakt.transactions.event.TransferRequestedEvent;
+import com.cdcrane.transakt.transactions.exception.NotAuthorisedToQueryTransactionsException;
 import com.cdcrane.transakt.transactions.repository.TransactionProjectionRepository;
 import com.cdcrane.transakt.transactions.repository.TransferRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,10 +27,12 @@ public class TransactionsProjectionService implements TransactionProjectionUseCa
 
     private final TransactionProjectionRepository transactionProjectionRepo;
     private final TransferRepository transferRepo;
+    private final BankAccountProjectionUseCase bankAccountProjectionUseCase;
 
-    public TransactionsProjectionService(TransactionProjectionRepository transactionProjectionRepository, TransferRepository transferRepository) {
+    public TransactionsProjectionService(TransactionProjectionRepository transactionProjectionRepository, TransferRepository transferRepository, BankAccountProjectionUseCase bankAccountProjectionUseCase) {
         this.transactionProjectionRepo = transactionProjectionRepository;
         this.transferRepo = transferRepository;
+        this.bankAccountProjectionUseCase = bankAccountProjectionUseCase;
     }
 
     @Override
@@ -128,6 +134,32 @@ public class TransactionsProjectionService implements TransactionProjectionUseCa
                 .build();
 
         transactionProjectionRepo.save(projection);
+
+    }
+
+    @Override
+    public Page<TransactionProjectionDTO> getTransactionsByAffectedAccount(UUID accountId, UUID currentCustomerId, Pageable pageable) {
+
+        UUID ownerId = bankAccountProjectionUseCase.getCustomerWhoOwnsAccount(accountId);
+
+        if (!currentCustomerId.equals(ownerId)) {
+            throw new NotAuthorisedToQueryTransactionsException("Customer " + currentCustomerId + " is not authorized to query transactions for account " + accountId + ". Only the owner of the account can query transactions.");
+        }
+
+        Page<TransactionProjection> transactions = transactionProjectionRepo.findByAffectedAccountId(accountId, pageable);
+
+        // Map the transactions to DTOs, and in the transaction ID, instead of providing the projection ID
+        // we provide the ID of the actual operation depending on the type.
+        // Then the frontend can use the type to build a link to that type of transaction with the ID.
+        return transactions
+                .map(t -> new TransactionProjectionDTO(t.getAmount(), t.getTransactionType(), t.getTransactionStatus(),
+                        switch (t.getTransactionType()){
+                            case TRANSFER -> t.getTransferId();
+                            case CASH_DEPOSIT -> t.getCashDepositId();
+                            case CASH_WITHDRAWAL -> t.getCashWithdrawalId();
+                        }
+                    )
+                );
 
     }
 }
